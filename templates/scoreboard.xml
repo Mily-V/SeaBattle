@@ -1,0 +1,17 @@
+<fest:template xmlns:fest="http://fest.mail.ru" context_name="json">
+
+	<h1> Epic Game </h1>
+	
+	<table>
+		<fest:each iterate="json" index="i" value="top">
+			<tr>
+				<td><fest:value>json[i].name</fest:value></td>
+				<td><fest:value>json[i].score</fest:value></td>
+			</tr>
+		</fest:each>	
+	</table>
+
+	<a href="/#"><button class="js-back"> Back </button></a>
+
+
+</fest:template>

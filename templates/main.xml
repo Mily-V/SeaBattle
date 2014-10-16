@@ -1,0 +1,16 @@
+<fest:template xmlns:fest="http://fest.mail.ru" context_name="json">
+	
+	<link rel="stylesheet" href="/css/main.css" />
+	
+	<div class="window">
+		<div class="menu">
+			<div class="menu__text">
+				<p><a href="/#game" class='game'> Game </a></p>
+				<p><a href="/#login" class='login'> Login </a></p>
+				<p><a href="/#scoreboard" class='scoreboard'> Score Board </a></p>
+			</div>
+		</div>	
+	</div>
+
+</fest:template>
+
