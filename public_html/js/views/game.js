@@ -1,19 +1,16 @@
-
 define([
     'backbone',
     'tmpl/game'
-],
- function(
-    Backbone,
-    tmpl
-){
+], function(Backbone, tmpl){
 
     var View = Backbone.View.extend({
 
 		root: $("#page"),
 		template: tmpl,
+		
 		initialize : function() {
 			$(this.root).append(this.el);
+			this.hide();
 			this.render();
 		},
 

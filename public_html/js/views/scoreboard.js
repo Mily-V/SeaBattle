@@ -1,20 +1,17 @@
 define([
-    'backbone',
-    'tmpl/scoreboard',
-	'collections/scores'
-    ],
-    function(
-        Backbone,
-        tmpl,
-		Scores
-    )
-{
-    var View = Backbone.View.extend({
-
+	'backbone',
+	'tmpl/scoreboard', 
+	'collections/scores' 
+], function(Backbone, tmpl, Scores) {
+	
+	var View = Backbone.View.extend({
+		
 		root: $("#page"),
 		template: tmpl,
+		
 		initialize : function() {
 			$(this.root).append(this.el);
+			this.hide();
 			this.render();
 		},
 
@@ -30,8 +27,7 @@ define([
 		hide : function() {
 			this.$el.hide();
 		}
-	});
-	
+	});	
 
     return new View({model: Scores});
 });

@@ -1,11 +1,8 @@
 define([
     'backbone',
     'models/score'
-], 
-	function(
-		Backbone,
-		Score
-	){
+], function( Backbone, Score) {
+
 	var Collection = Backbone.Collection.extend({
         model: Score,													//связываем коллекцию с моделью
 

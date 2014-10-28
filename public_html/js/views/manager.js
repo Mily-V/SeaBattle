@@ -1,13 +1,8 @@
-
 define([
 	'backbone',
 	'jquery',
 	'router'
-], function (
-	Backbone, 
-	jQuery,
-	router
-){
+], function (Backbone, jQuery, router) {
 	var views = [];
 
 	var View = Backbone.View.extend({

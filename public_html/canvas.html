@@ -1,0 +1,122 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<title>HTML5 Canvas</title>
+<style>
+	#drawingLine {
+		position: absolute; 	
+		z-index: 0;
+	}
+	#drawingBall {
+		position: absolute; 	
+		z-index: 1;
+	}
+	#drawingText {
+		position: absolute; 	
+		z-index: 2;
+	}
+	#startAnimate {
+		float: right;
+		width: 250px;
+		height: 150px;
+		font-size: 40px;
+	}
+</style>
+</head>
+<body>
+
+	<canvas id="drawingLine" width="1300" height="700"></canvas>
+	<canvas id="drawingBall" width="1300" height="700"></canvas>
+	<canvas id="drawingText" width="1300" height="90"></canvas>
+	<button id="startAnimate">START</button>
+	<script type="text/javascript">
+		var canvas = document.getElementById("drawingBall");
+		var canvas2 = document.getElementById("drawingLine");
+		var canvas3 = document.getElementById("drawingText");
+		var cxtBall = canvas.getContext("2d");   
+		var cxtLine = canvas2.getContext("2d");
+		var cxtText = canvas3.getContext("2d");
+		
+		var startTime;
+		var x;
+		var y;
+		var frequency = 30;
+		var amplitude = 100;
+		
+		var setting = function() {
+			window.addEventListener('keydown', whatKey, true);
+		}
+				
+		var print = function() {
+			cxtText.font = 'italic 20pt Calibri';
+			cxtText.fillText('Frequency', 10, 30);
+			cxtText.fillText(frequency.toString(), 170, 30);
+			cxtText.fillText('Amplitude ', 10, 60);
+			cxtText.fillText(amplitude.toString(), 170, 60);
+			setting();
+		}
+		
+		var animate = function(){
+			var time = new Date().getTime();									//Date() - настоящее время getTime() - милисекунды от 1970 
+			var shiftTime = time - startTime;
+			x = shiftTime/frequency;
+			y = Math.sin(shiftTime/1000) * amplitude + 200;
+			
+			//cxtLine.clearRect(0,0, canvas.width, canvas.height);
+			cxtLine.beginPath();
+			cxtLine.arc( x, y, 1, 0, 2*Math.PI, false ); 
+			cxtLine.fillStyle = "black";
+			cxtLine.fill();
+			cxtLine.lineWidth = 2;
+			cxtLine.strokeStyle = "black"; 
+			cxtLine.stroke();
+			
+  			cxtBall.clearRect(0,0, canvas.width, canvas.height);
+			cxtBall.beginPath();
+			cxtBall.arc( x, y, 20, 0, 2*Math.PI, false ); 
+			cxtBall.fillStyle = "#e67e67";
+			cxtBall.fill();
+			cxtBall.lineWidth = 2;
+			cxtBall.strokeStyle = "black"; 
+			cxtBall.stroke();
+			
+			requestAnimationFrame(animate);
+		};
+
+		var whatKey = function(){
+			switch (event.keyCode) {
+            case 38:
+                this.amplitude += 5;
+				cxtText.clearRect(0,0, canvas3.width, canvas3.height);
+				print();
+                break;
+            case 40:
+                this.amplitude -= 5;
+				cxtText.clearRect(0,0, canvas3.width, canvas3.height);
+				print();
+                break;
+            case 39:
+                this.frequency += 1;
+				cxtText.clearRect(0,0, canvas3.width, canvas3.height);
+				print();
+                break;
+            case 37:
+                this.frequency -= 1;
+				cxtText.clearRect(0,0, canvas3.width, canvas3.height);
+				print();
+                break;
+            }
+ 
+		};
+		
+		print();		
+		document.querySelector('#startAnimate').addEventListener('click', function(){
+			startTime = new Date().getTime();											//самое первое число
+			animate();
+		});
+
+
+   </script>
+</body>
+</html>

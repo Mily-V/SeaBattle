@@ -1,7 +1,5 @@
 <fest:template xmlns:fest="http://fest.mail.ru" context_name="json">
 	
-	<link rel="stylesheet" href="/css/main.css" />
-	
 	<div class="window">
 		<div class="menu">
 			<div class="menu__text">

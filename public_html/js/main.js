@@ -20,10 +20,7 @@ require.config({
 define([
     'backbone',
     'router'
-], function(
-    Backbone,
-    router
-){
+], function(Backbone, router) {
 	console.log("main.js launched");
     Backbone.history.start();
 });
