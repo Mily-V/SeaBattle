@@ -5,10 +5,6 @@ define([
 
 	var Collection = Backbone.Collection.extend({
         model: Score,													//связываем коллекцию с моделью
-
-		Collection.comparator = function(Score) {
-			return Score.get('name');
-		}
 		
         initialize: function() {
             console.log("Scoreboard is created");
