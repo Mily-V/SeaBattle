@@ -1,24 +1,33 @@
 define([
     'backbone',
-	'models/field',
+	'models/cell',
 	'models/ship',
-	'collections/fields',
+	'collections/yourField',
 	'collections/ships'	
-], function(Backbone, mini_field, ship, Fields, Ships){
+], function(Backbone, Cell, Ship, field, ships){
 
-	var i = 0, j;
-	var n = 100;
-	var n_x = 10;
-	var n_ships = 10;
-	var width_field = 40;
-	var height_field = 40;
-	var len, lenY;
-	var mouseX, mouseY;
-	var drag = false;
-	var cur_ship = new ship;
-	var interval;
-	var place = [];
-	var newX, newY;	
+	var WIDTH_CANVAS = 1200,
+		HEIGHT_CANVAS = 600,
+		WIDTH_CELL = 40,
+		HEIGHT_CELL = 40,
+		CELL_NUMBER = 100,
+		CELL_IN_LINE = 10,
+		SHIP_NUMBER = 1,
+		DRAG_DIFFER = 8,
+		ENTER_KEY = 13,
+		UP_KEY = 38,
+		RIGHT_KEY = 39,
+		i = 0,
+		j = 0,
+		widthShip = WIDTH_CELL,
+		heightShip = HEIGHT_CELL,
+		mouseX = 0,
+		mouseY = 0,
+		drag = false,
+		currentShip = new Ship,
+		newShipX = 0,
+		newShipY = 0;
+		//place = [];
 
     var View = Backbone.View.extend({
 
@@ -30,78 +39,75 @@ define([
 		},
 		
         initialize: function () {
-			this.el.width = 1200;
-            this.el.height = 600;
+			this.el.width = WIDTH_CANVAS;
+            this.el.height = HEIGHT_CANVAS;
 			this.el.id = "drawing";
 			this.ctx = this.el.getContext('2d');
 			_.bindAll(this, 'keyDown');
-            $(document).on('keydown', this.keyDown);
-		
+            $(document).on('keydown', this.keyDown);		
         },
 		
         render: function () {
-			Fields.create();
-			this.draw();
-			
+			field.create();
+			this.draw();			
 			this.start();
 			return this.el;
         },
 		
 		start: function() {
-			for (i = 0; i < 1; i++) {
-				console.log("i = " + i);
-				cur_ship = Ships.get(i);
-				newX = cur_ship.get("x");
-				newY = cur_ship.get("y");
-				cur_ship.draw(this.ctx);			
+			for (i = 0; i < SHIP_NUMBER ; i++) {
+				currentShip = ships.get(i);
+				newShipX = currentShip.get("x");
+				newShipY = currentShip.get("y");
+				currentShip.draw(this.ctx);			
 			}				
 		},
 		
 		draw: function() {
 			this.ctx.fillStyle = "#FCE45C";
 			this.ctx.fillRect(0, 0, this.el.width, this.el.height);	
-			for (i = 0; i < n; i++) 
-				if (Fields.get(i).get("status") == 0)
-					Fields.get(i).draw(this.ctx);
-			for (i = 0; i < n; i++) 
-				if (Fields.get(i).get("status") != 0)
-					Fields.get(i).draw(this.ctx);
-			cur_ship.draw(this.ctx);
-			
+			for (i = 0; i < CELL_NUMBER; i++) 
+				if (field.get(i).get("status") == "empty")
+					field.get(i).draw(this.ctx);
+			for (i = 0; i < CELL_NUMBER; i++) 
+				if (field.get(i).get("status") != "empty")
+					field.get(i).draw(this.ctx);
+			currentShip.draw(this.ctx);			
 		},
 		
 		mouseDown: function(evt) {
 			mouseX = evt.pageX - this.el.offsetLeft;
 			mouseY = evt.pageY - this.el.offsetTop;
-				if (mouseX < cur_ship.get("x") + cur_ship.get("w") && 
-						mouseX > cur_ship.get("x") && 
-						mouseY < cur_ship.get("y") + cur_ship.get("h") && 
-						mouseY > cur_ship.get("y")) {
+				if (
+					mouseX < currentShip.get("x") + currentShip.get("w") && 
+					mouseX > currentShip.get("x") && 
+					mouseY < currentShip.get("y") + currentShip.get("h") && 
+					mouseY > currentShip.get("y") 
+				) {
 					drag = true;
-					cur_ship.set("offsetX", mouseX - cur_ship.get("x") + 8);
-					cur_ship.set("offsetY", mouseY - cur_ship.get("y") + 8);
+					currentShip.set("offsetX", mouseX - currentShip.get("x") + DRAG_DIFFER);
+					currentShip.set("offsetY", mouseY - currentShip.get("y") + DRAG_DIFFER);
 				}
 		},
 		
-		mouseMove: function (evt) {
-			console.log("мышка удерживается");
+		mouseMove: function(evt) {
 			mouseX = evt.pageX - this.el.offsetLeft;
 			mouseY = evt.pageY - this.el.offsetTop;
 			if (drag) {
-				cur_ship.set("x", mouseX - cur_ship.get("offsetX"));
-				cur_ship.set("y", mouseY - cur_ship.get("offsetY"));
+				currentShip.set("x", mouseX - currentShip.get("offsetX"));
+				currentShip.set("y", mouseY - currentShip.get("offsetY"));
 				this.draw();
-				for (i = 0; i < n; i++) {
-					for (j = 0; j < n; j++) {
-						//if (arr[j].status != 1)
-						Fields.get(j).set("status", 0);
+				for (i = 0; i < CELL_NUMBER; i++) {
+					for (j = 0; j < CELL_NUMBER; j++) {
+						field.get(j).set("status", "empty");
 					}
-					if (cur_ship.get("x") >= Fields.get(i).get("x") && 
-							cur_ship.get("x") <= Fields.get(i).get("x")  + width_field &&							
-							cur_ship.get("y") >= Fields.get(i).get("y") && 
-							cur_ship.get("y") <= Fields.get(i).get("y") + height_field) {
-							
-						if (cur_ship.get("orientation") == 0) 
+					if (
+						currentShip.get("x") >= field.get(i).get("x") && 
+						currentShip.get("x") <= field.get(i).get("x")  + WIDTH_CELL &&							
+						currentShip.get("y") >= field.get(i).get("y") && 
+						currentShip.get("y") <= field.get(i).get("y") + HEIGHT_CELL
+					) {							
+						if (currentShip.get("orientation") == "horizon") 
 							this.changeColorH(i);
 						else 
 							this.changeColorV(i);	
@@ -111,37 +117,34 @@ define([
 			}
 		},
 		
-		mouseUp: function (evt) {
-			console.log("Отпустили мышь");
+		mouseUp: function(evt) {
+			console.log("Мышь отпустили");
 			drag = false;
-			cur_ship.set("x", newX);
-			cur_ship.set("y", newY);	
+			currentShip.set("x", newShipX);
+			currentShip.set("y", newShipY);	
 			this.draw();
 		},
 		
 		keyDown: function(evt) {
 			switch (event.keyCode) {
-				case 13:
-					for (i = 0; i < n; i++)
-						if (Fields.get(i).get("status") == 2)
-							Fields.get(i).set("value", "busy");
-					for (j = 0; j < n; j++) {
-						//if (arr[j].status != 1)
-						Fields.get(j).set("status", 0);
+				case ENTER_KEY:
+					for (i = 0; i < CELL_NUMBER; i++)
+						if (field.get(i).get("status") == "ok")
+							field.get(i).set("value", "busy");
+					for (j = 0; j < CELL_NUMBER; j++) {
+						field.get(j).set("status", "empty");
 					}
 					break; 
-				case 38:
-					if (cur_ship.get("orientation") == 0) {
-						cur_ship.set("orientation", 1);
-						cur_ship.turn();
-						//this.draw();
+				case UP_KEY:
+					if (currentShip.get("orientation") == "horizon") {
+						currentShip.set("orientation", "vertical");
+						currentShip.turn();
 					}	
 					break;    
-				case 39:
-					if (cur_ship.get("orientation") == 1) {
-						cur_ship.set("orientation", 0);
-						cur_ship.turn();
-						//this.draw();
+				case RIGHT_KEY:
+					if (currentShip.get("orientation") == "vertical") {
+						currentShip.set("orientation", "horizon");
+						currentShip.turn();
 					}
 					break;
 			};
@@ -150,101 +153,113 @@ define([
 
 		
 		changeColorH: function(i) {
-			len = cur_ship.get("w") / width_field - 1;		
-			if (cur_ship.get("x") >= Fields.get(i).get("x") && 
-					cur_ship.get("x") <= Fields.get(i).get("x") + width_field/2 && 
-					cur_ship.get("y") >= Fields.get(i).get("y") && 
-					cur_ship.get("y") <= Fields.get(i).get("y") + height_field/2) {
-				newX = Fields.get(i).get("x");
-				newY = Fields.get(i).get("y");
-				for (j = 0; j <= len; j++) {
-					Fields.get(i).set("status", 2);
+			widthShip = currentShip.get("w") / WIDTH_CELL;	
+			console.log(widthShip);
+			if (
+				currentShip.get("x") >= field.get(i).get("x") && 
+				currentShip.get("x") <= field.get(i).get("x") + WIDTH_CELL/2 && 
+				currentShip.get("y") >= field.get(i).get("y") && 
+				currentShip.get("y") <= field.get(i).get("y") + HEIGHT_CELL/2
+			) {
+				newShipX = field.get(i).get("x");
+				newShipY = field.get(i).get("y");
+				for (j = 0; j < widthShip; j++) {
+					field.get(i).set("status", "ok");
 					i++;
 				}
 			}
-			if (cur_ship.get("x") >= Fields.get(i).get("x") + width_field/2 && 
-					cur_ship.get("x") <= Fields.get(i).get("x") + width_field && 
-					cur_ship.get("y") >= Fields.get(i).get("y") && 
-					cur_ship.get("y") <= Fields.get(i).get("y") + height_field/2) {
-				newX = Fields.get(i+1).get("x");
-				newY = Fields.get(i+1).get("y");
-				for (j = 0; j <= len; j++) {
-					Fields.get(i+1).set("status", 2);
+			if (
+				currentShip.get("x") >= field.get(i).get("x") + WIDTH_CELL/2 && 
+				currentShip.get("x") <= fields.get(i).get("x") + WIDTH_CELL && 
+				currentShip.get("y") >= fields.get(i).get("y") && 
+				currentShip.get("y") <= field.get(i).get("y") + HEIGHT_CELL/2
+			) {
+				newShipX = field.get(i+1).get("x");
+				newShipY = field.get(i+1).get("y");
+				for (j = 0; j < widthShip; j++) {
+					field.get(i+1).set("status", "ok");
 					i++;
 				}
 			}
-			if (cur_ship.get("x") >= Fields.get(i).get("x") && 
-					cur_ship.get("x") <= Fields.get(i).get("x") + width_field/2 && 
-					cur_ship.get("y") >= Fields.get(i).get("y") + height_field/2 && 
-					cur_ship.get("y") <= Fields.get(i).get("y") + height_field) {
-				newX = Fields.get(i+n_x).get("x");
-				newY = Fields.get(i+n_x).get("y");
-				for (j = 0; j <= len; j++) {
-					Fields.get(i+n_x).set("status", 2);
+			if (
+				currentShip.get("x") >= field.get(i).get("x") && 
+				currentShip.get("x") <= field.get(i).get("x") + WIDTH_CELL/2 && 
+				currentShip.get("y") >= field.get(i).get("y") + HEIGHT_CELL/2 && 
+				currentShip.get("y") <= field.get(i).get("y") + HEIGHT_CELL
+			) {
+				newShipX = field.get(i+CELL_IN_LINE).get("x");
+				newShipY = field.get(i+CELL_IN_LINE).get("y");
+				for (j = 0; j < widthShip; j++) {
+					field.get(i+CELL_IN_LINE).set("status", "ok");
 					i++;
 				}
 			}
-			if (cur_ship.get("x") >= Fields.get(i).get("x") + width_field/2 && 
-					cur_ship.get("x") <= Fields.get(i).get("x") + width_field && 
-					cur_ship.get("y") >= Fields.get(i).get("y") + height_field/2 && 
-					cur_ship.get("y") <= Fields.get(i).get("y") + height_field) {
-				newX = Fields.get(i+n_x+1).get("x");
-				newY = Fields.get(i+n_x+1).get("y");
-				for (j = 0; j <= len; j++) {
-					Fields.get(i+n_x+1).set("status", 2);
+			if (
+				currentShip.get("x") >= field.get(i).get("x") + WIDTH_CELL/2 && 
+				currentShip.get("x") <= field.get(i).get("x") + WIDTH_CELL && 
+				currentShip.get("y") >= field.get(i).get("y") + HEIGHT_CELL/2 && 
+				currentShip.get("y") <= field.get(i).get("y") + HEIGHT_CELL
+			) {
+				newShipX = field.get(i+CELL_IN_LINE+1).get("x");
+				newShipY = field.get(i+CELL_IN_LINE+1).get("y");
+				for (j = 0; j < widthShip; j++) {
+					field.get(i+CELL_IN_LINE+1).set("status", "ok");
 					i++;
 				}
 			}	
 		},
 		
 		changeColorV: function(i) {
-			lenY = cur_ship.get("h") / height_field - 1;		
-			if (cur_ship.get("x") >= Fields.get(i).get("x") && 
-					cur_ship.get("x") <= Fields.get(i).get("x") + width_field/2 && 
-					cur_ship.get("y") >= Fields.get(i).get("y") && 
-					cur_ship.get("y") <= Fields.get(i).get("y") + height_field/2) {
-				newX = Fields.get(i).get("x");
-				newY = Fields.get(i).get("y");
-				for (j = 0; j <= lenY; j++) {
-					console.log("dim: " + lenY);
-					Fields.get(i + n_x*j).set("status", 2);
+			heightShip = currentShip.get("h") / HEIGHT_CELL;		
+			if (
+				currentShip.get("x") >= field.get(i).get("x") && 
+				currentShip.get("x") <= field.get(i).get("x") + WIDTH_CELL/2 && 
+				currentShip.get("y") >= field.get(i).get("y") && 
+				currentShip.get("y") <= field.get(i).get("y") + HEIGHT_CELL/2
+			) {
+				newShipX = field.get(i).get("x");
+				newShipY = field.get(i).get("y");
+				for (j = 0; j < heightShip; j++) {
+					field.get(i + CELL_IN_LINE*j).set("status", "ok");
 				}
 			}
-			if (cur_ship.get("x") >= Fields.get(i).get("x") + width_field/2 && 
-					cur_ship.get("x") <= Fields.get(i).get("x") + width_field && 
-					cur_ship.get("y") >= Fields.get(i).get("y") && 
-					cur_ship.get("y") <= Fields.get(i).get("y") + height_field/2) {
-				newX = Fields.get(i+1).get("x");
-				newY = Fields.get(i+1).get("y");
-				for (j = 0; j <= lenY; j++) {
-					Fields.get(i + n_x*j + 1).set("status", 2);			
+			if (
+				currentShip.get("x") >= field.get(i).get("x") + WIDTH_CELL/2 && 
+				currentShip.get("x") <= field.get(i).get("x") + WIDTH_CELL && 
+				currentShip.get("y") >= field.get(i).get("y") && 
+				currentShip.get("y") <= field.get(i).get("y") + HEIGHT_CELL/2
+			) {
+				newShipX = field.get(i+1).get("x");
+				newShipY = field.get(i+1).get("y");
+				for (j = 0; j < heightShip; j++) {
+					field.get(i + CELL_IN_LINE*j + 1).set("status", "ok");			
 				}
 			}
-			if (cur_ship.get("x") >= Fields.get(i).get("x") && 
-					cur_ship.get("x") <= Fields.get(i).get("x") + width_field/2 && 
-					cur_ship.get("y") >= Fields.get(i).get("y") + height_field/2 && 
-					cur_ship.get("y") <= Fields.get(i).get("y") + height_field) {
-				newX = Fields.get(i+n_x).get("x");
-				newY = Fields.get(i+n_x).get("y");
-				for (j = 0; j <= lenY; j++) {
-					Fields.get(i + n_x*(j + 1)).set("status", 2);					
+			if (
+				currentShip.get("x") >= field.get(i).get("x") && 
+				currentShip.get("x") <= field.get(i).get("x") + WIDTH_CELL/2 && 
+				currentShip.get("y") >= field.get(i).get("y") + HEIGHT_CELL/2 && 
+				currentShip.get("y") <= field.get(i).get("y") + HEIGHT_CELL
+			) {
+				newShipX = field.get(i+CELL_IN_LINE).get("x");
+				newShipY = field.get(i+CELL_IN_LINE).get("y");
+				for (j = 0; j < heightShip; j++) {
+					field.get(i + CELL_IN_LINE*(j + 1)).set("status", "ok");					
 				}
 			}
-			if (cur_ship.get("x") >= Fields.get(i).get("x") + width_field/2 && 
-					cur_ship.get("x") <= Fields.get(i).get("x") + width_field && 
-					cur_ship.get("y") >= Fields.get(i).get("y") + height_field/2 && 
-					cur_ship.get("y") <= Fields.get(i).get("y") + height_field) {
-				newX = Fields.get(i+n_x+1).get("x");
-				newY = Fields.get(i+n_x+1).get("y");
-				for (j = 0; j <= lenY; j++) {
-					Fields.get(i + n_x*(j + 1) + 1).set("status", 2);			
+			if (
+				currentShip.get("x") >= field.get(i).get("x") + WIDTH_CELL/2 && 
+				currentShip.get("x") <= field.get(i).get("x") + WIDTH_CELL && 
+				currentShip.get("y") >= field.get(i).get("y") + HEIGHT_CELL/2 && 
+				currentShip.get("y") <= field.get(i).get("y") + HEIGHT_CELL
+			) {
+				newShipX = field.get(i+CELL_IN_LINE+1).get("x");
+				newShipY = field.get(i+CELL_IN_LINE+1).get("y");
+				for (j = 0; j < heightShip; j++) {
+					field.get(i + CELL_IN_LINE*(j + 1) + 1).set("status", "ok");			
 				}
 			}
 		}
-		
-		
-		
-		
 		
 	});
 

@@ -1,20 +1,24 @@
 define([
     'backbone',
-	'models/field',
+	'models/cell',
 	'models/ship',
-	'collections/fields',
-	'collections/enemyFields',
+	'collections/yourField',
+	'collections/enemyField',
 	'collections/ships'	
-], function(Backbone, mini_field, ship, Fields, EnemyFields, Ships){
+], function(Backbone, Cell, Ship, field, enemyField, ships){
 
-	var i = 0, j;
-	var n = 100;
-	var n_x = 10;
-	var n_ships = 10;
-	var width_field = 40;
-	var height_field = 40;
-	var mouseX, mouseY;
-	var cur_ship = new ship;
+	var WIDTH_CANVAS = 1200,
+		HEIGHT_CANVAS = 600,
+		WIDTH_CELL = 40,
+		HEIGHT_CELL = 40,
+		CELL_NUMBER = 100,
+		CELL_IN_LINE = 10,
+		SHIP_NUMBER = 1,
+		i = 0,
+		j = 0,
+		mouseX = 0,
+		mouseY = 0,
+		currentShip = new Ship;
 
     var View = Backbone.View.extend({
 
@@ -23,47 +27,45 @@ define([
 			'mousedown' : 'mouseDown',
 			'mousemove' : 'mouseMove',
 			'mouseup' : 'mouseUp'
-			//'keydown' : 'keyDown'
 		},
 		
         initialize: function () {
-			this.el.width = 1200;
-            this.el.height = 600;
+			this.el.width = WIDTH_CANVAS;
+            this.el.height = HEIGHT_CANVAS;
 			this.el.id = "drawing";
 			this.ctx = this.el.getContext('2d');
-            //$(document).on('keydown', this.keyDown);
-		
         },
 		
         render: function () {
-			EnemyFields.create();
-			this.draw();
-			
+			enemyField.create();
+			this.draw();			
 			return this.el;
         },
 		
 		draw: function() {
-			for (i = 0; i < n; i++) 
-				if (Fields.get(i).get("status") == 0)
-					Fields.get(i).draw(this.ctx);
-			for (i = 0; i < n; i++) 
-				if (Fields.get(i).get("status") != 0)
-					Fields.get(i).draw(this.ctx);
+			for (i = 0; i < CELL_NUMBER; i++) 
+				if (field.get(i).get("status") == "empty")
+					field.get(i).draw(this.ctx);
+			for (i = 0; i < CELL_NUMBER; i++) 
+				if (field.get(i).get("status") != "empty")
+					field.get(i).draw(this.ctx);
 					
-			for (i = 0; i < n; i++) 
-				if (EnemyFields.get(i).get("status") == 0)
-					EnemyFields.get(i).draw(this.ctx);
+			for (i = 0; i < CELL_NUMBER; i++) 
+				if (enemyField.get(i).get("status") == "empty")
+					enemyField.get(i).draw(this.ctx);
 		},
 		
 		mouseDown: function(evt) {
 			mouseX = evt.pageX - this.el.offsetLeft;
 			mouseY = evt.pageY - this.el.offsetTop;
-			for (i = 0; i < n; i++) {
-				if (mouseX > EnemyFields.get(i).get("x") && 
-						mouseX < EnemyFields.get(i).get("x") + width_field &&							
-						mouseY > EnemyFields.get(i).get("y") && 
-						mouseY < EnemyFields.get(i).get("y") + height_field) {
-					EnemyFields.get(i).set("value", "miss");
+			for (i = 0; i < CELL_NUMBER; i++) {
+				if (
+					mouseX > enemyField.get(i).get("x") && 
+					mouseX < enemyField.get(i).get("x") + WIDTH_CELL &&							
+					mouseY > enemyField.get(i).get("y") && 
+					mouseY < enemyField.get(i).get("y") + HEIGHT_CELL
+				) {
+					enemyField.get(i).set("value", "miss");
 				}
 			}
 		},
@@ -71,8 +73,7 @@ define([
 		mouseUp: function (evt) {
 			this.draw();
 		}
-			
-		
+				
 	});
 
     return new View();

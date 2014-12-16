@@ -14,7 +14,7 @@ define([
 			h: 0,
 			offsetX: 0,
 			offsetY: 0,
-			orientation: 0
+			orientation: "horizon"
         },
 		
 		draw: function(ctx) {

@@ -1,7 +1,7 @@
 define([
     'backbone',
     'tmpl/login'
-], function(Backbone, tmpl){
+], function(Backbone, tmpl) {
 
 	var View = Backbone.View.extend({
   
@@ -10,17 +10,19 @@ define([
 		
         initialize: function () {
 			$('body').append(this.el);
-			this.hide();
 			this.render();
         },
+		
         render: function () {
             this.$el.html(this.template);
 			return this;
         },
+		
         show: function () {
             this.$el.show();
 			this.trigger("show", this);
         },
+		
         hide: function () {
             this.$el.hide();
         }

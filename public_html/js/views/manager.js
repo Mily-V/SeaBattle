@@ -2,24 +2,23 @@ define([
 	'backbone',
 	'jquery',
 	'router'
-], function (Backbone, jQuery, router) {
+], function(Backbone, jQuery, router) {
+
 	var views = [];
 
-	var View = Backbone.View.extend({
+	var Manager = Backbone.View.extend({
 		
 		addView: function(currentView) {
-			console.log("4");
 			views.push(currentView);
 			this.listenTo(currentView, "show", function() {
-				views.forEach(function(view) {
-					if (view != currentView) {
+				views.forEach( function(view) {
+					if (view != currentView) 
 						view.hide();
-					}
 				});
 			});
 		}
 		
 	});
 
-	return new View();
+	return new Manager();
 });

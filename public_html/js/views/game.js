@@ -3,15 +3,15 @@ define([
     'tmpl/game',
 	'views/buildField',
 	'views/gameField',
-	'collections/fields' 
-], function(Backbone, tmpl, build, game, Fields){
+	'collections/yourField' 
+], function(Backbone, tmpl, build, game, field){
 
 
     var View = Backbone.View.extend({
 
 		template: tmpl,
         className: 'wrap',
-		collection: Fields,
+		collection: field,
 		
 		events: {
 			"click button.fieldBattle__ready": "ready" 
@@ -19,7 +19,6 @@ define([
 		
         initialize: function () {
 			$('body').append(this.el);
-			this.hide();
 			this.render_build();			
         },
 		
