@@ -1,14 +1,14 @@
-require.config({
+require.config({								// конфигурация require
     urlArgs: "_=" + (new Date()).getTime(),
-    baseUrl: "js",
-    paths: {
+    baseUrl: "js",								// (основной)путь туда, где лежат все модули (папка js)
+    paths: { 									// здесь то, что не лежит в baseUrl + им заданы псевдонимы
         jquery: "lib/jquery",
         underscore: "lib/underscore",
         backbone: "lib/backbone"
     },
-    shim: {
+    shim: {										// сторонние модули
         'backbone': {
-            deps: ['underscore', 'jquery'],
+            deps: ['underscore', 'jquery'],		// зависимости
             exports: 'Backbone'
         },
         'underscore': {
@@ -18,9 +18,8 @@ require.config({
 });
 
 define([
-    'backbone',
-    'router'
-], function(Backbone, router) {
-	console.log("2");
+	'backbone',
+	'router'
+	], function(Backbone, router) {
     Backbone.history.start();
 });
