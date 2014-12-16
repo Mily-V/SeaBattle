@@ -4,28 +4,26 @@ define([
 ], function( Backbone, tmpl) {
 
     var View = Backbone.View.extend({
-
-		root: $("#page"),
 		template: tmpl,
+		className: 'wrap',
 		
-		initialize : function() {
-			$(this.root).append(this.el);
+        initialize: function () {
+			$('body').append(this.el);
 			this.hide();
 			this.render();
-		},
-
-		render : function() {
-			this.$el.html(this.template);
-		}, 
-
-		show : function() {
-			this.$el.show();
+        },
+        render: function () {
+            this.$el.html(this.template);
+			return this;
+        },
+        show: function () {
+            this.$el.show();
 			this.trigger("show", this);
-		},
+        },
+        hide: function () {
+            this.$el.hide();
+        }
 
-		hide : function() {
-			this.$el.hide();
-		}
 	});
 
     return new View();

@@ -17,7 +17,7 @@ define([
         },
 		
 		initialize : function() {
-			console.log("router initialize");
+			console.log("3");
 			viewManager.addView(gameScreen);
 			viewManager.addView(scoreboardScreen);
 			viewManager.addView(mainScreen);
@@ -37,7 +37,8 @@ define([
         },
         loginAction: function () {
             loginScreen.show();
-        }		
+        }	
+		
     });
 	
     return new Router();

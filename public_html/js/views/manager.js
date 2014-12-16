@@ -8,6 +8,7 @@ define([
 	var View = Backbone.View.extend({
 		
 		addView: function(currentView) {
+			console.log("4");
 			views.push(currentView);
 			this.listenTo(currentView, "show", function() {
 				views.forEach(function(view) {

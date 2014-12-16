@@ -1,5 +1,10 @@
-<fest:template xmlns:fest="http://fest.mail.ru" context_name="json">
+<fest:template xmlns:fest="http://fest.mail.ru">
 
-	<a href="/#"><button class="js-back"> Back </button></a>
-	
+	<div class="fieldBattle">
+		<p class="fieldBattle__title"></p>
+		<div class="fieldBattle__myField"></div>
+		<button class="fieldBattle__ready">READY</button>
+		<a href="/#"><button class="js-back fieldBattle__back"> Back </button></a>
+		
+	</div>
 </fest:template>

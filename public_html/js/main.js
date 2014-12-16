@@ -21,6 +21,6 @@ define([
     'backbone',
     'router'
 ], function(Backbone, router) {
-	console.log("main.js launched");
+	console.log("2");
     Backbone.history.start();
 });
