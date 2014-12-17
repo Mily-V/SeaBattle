@@ -24,9 +24,10 @@ define([
 					y: y0, 
 					w: WIDTH_CELL, 
 					h: HEIGHT_CELL, 
-					n: i, 
+					number: i, 
 					status: "empty", 
-					block: 0, 
+					block: false, 
+					lock: false,
 					value: "empty"
 				});
 				x0 = x0 + WIDTH_CELL;

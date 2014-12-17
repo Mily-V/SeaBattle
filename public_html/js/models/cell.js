@@ -12,9 +12,10 @@ define([
 			y: 0,
 			w: 0,
 			h: 0,
-			n: 0,								//?
+			number: 0,								
 			status: "empty",
-			block: 0,							//?
+			block: false,
+			lock: false,
 			value: "empty"
         },
 		
