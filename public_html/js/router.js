@@ -16,26 +16,26 @@ define([
             '*default': 'defaultActions'
         },
 		
-		initialize : function() {
-			console.log("3");
+		initialize: function() {
 			viewManager.addView(gameScreen);
 			viewManager.addView(scoreboardScreen);
 			viewManager.addView(mainScreen);
 			viewManager.addView(loginScreen);
 		},
 		
-        defaultActions: function () {
+        defaultActions: function() {
             mainScreen.show();
         },
 		
-        scoreboardAction: function () {
+        scoreboardAction: function() {
             scoreboardScreen.show();
         },
 		
-        gameAction: function () {
+        gameAction: function() {
             gameScreen.show();
         },
-        loginAction: function () {
+		
+        loginAction: function() {
             loginScreen.show();
         }	
 		
