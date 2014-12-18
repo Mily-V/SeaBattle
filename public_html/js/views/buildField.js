@@ -28,11 +28,13 @@ define([
 		mouseX = 0,
 		mouseY = 0,
 		drag = false,
+		allowClick = true,
 		currentShip = new Ship,
 		newShipX = 0,
 		newShipY = 0,
-		statusCell = "ok";
-		//place = [];
+		statusCell = "ok",
+		helpText = "Put Ship and press ENTER";
+		
 
     var View = Backbone.View.extend({
 
@@ -52,15 +54,15 @@ define([
             $(document).on('keydown', this.keyDown);		
         },
 		
-        render: function () {
-			field.create();
-			this.draw();			
+        render: function () {			
 			this.start();
 			return this.el;
         },
 		
 		start: function() {
-			this.putShip(alreadyShip);		
+			field.create();
+			this.putShip(alreadyShip);	
+			this.draw();
 		},
 		
 		putShip: function(number_ship) {
@@ -68,9 +70,7 @@ define([
 				currentShip = ships.get(number_ship);
 				newShipX = currentShip.get("x");
 				newShipY = currentShip.get("y");
-				currentShip.draw(this.ctx);
 			}
-			//else
 		},
 		
 		draw: function() {
@@ -82,12 +82,30 @@ define([
 			for (i = 0; i < CELL_NUMBER; i++) 
 				if (field.get(i).get("status") != "empty")
 					field.get(i).draw(this.ctx);
-			currentShip.draw(this.ctx);			
+			if (!this.isShipsAll()) {
+				this.ctx.fillStyle = "black";
+				this.ctx.strokeStyle = "black";
+				this.ctx.font = "60px Palatino Linotype";
+				this.ctx.textAlign = "center";
+				this.ctx.fillText("Put Ship", 700, 170);
+				this.ctx.fillText("and", 700, 240);
+				this.ctx.fillText("press ENTER", 700, 310);
+				currentShip.draw(this.ctx);		
+			}
+			else {
+				this.ctx.fillStyle = "black";
+				this.ctx.strokeStyle = "black";
+				this.ctx.font = "60px Palatino Linotype";
+				this.ctx.textAlign = "center"
+				this.ctx.fillText("Press READY !", 700, 240);	
+				allowClick = false;
+			}
 		},
 		
 		mouseDown: function(evt) {
-			mouseX = evt.pageX - this.el.offsetLeft;
-			mouseY = evt.pageY - this.el.offsetTop;
+			if (allowClick) {
+				mouseX = evt.pageX - this.el.offsetLeft;
+				mouseY = evt.pageY - this.el.offsetTop;
 				if (
 					mouseX < currentShip.get("x") + currentShip.get("w") && 
 					mouseX > currentShip.get("x") && 
@@ -98,6 +116,7 @@ define([
 					currentShip.set("offsetX", mouseX - currentShip.get("x") + DRAG_DIFFER);
 					currentShip.set("offsetY", mouseY - currentShip.get("y") + DRAG_DIFFER);
 				}
+			}
 		},
 		
 		mouseMove: function(evt) {
@@ -156,6 +175,7 @@ define([
 					break;
 			};
 			this.draw();
+			
 		},
 
 		
@@ -344,9 +364,14 @@ define([
 			}	
 			for (i = 0; i < CELL_NUMBER; i++) {
 				field.get(i).set("status", "empty");
-			}			
-			this.draw();		
+			}					
+		},
 		
+		isShipsAll: function() {
+			if (alreadyShip == SHIP_NUMBER)
+				return true;
+			else
+				return false;
 		}
 		
 	});
