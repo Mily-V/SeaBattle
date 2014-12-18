@@ -23,23 +23,29 @@ define([
 			ctx.beginPath();
 			ctx.rect(this.get("x"), this.get("y"), this.get("w"), this.get("h"));			
 			if (this.get("value") == "empty")					// сюда не стреляли
-				ctx.fillStyle = "#f9ffd9";
+				ctx.fillStyle = "#F9FFD9";
 			if (this.get("value") == "miss")					// промахнулись
 				ctx.fillStyle = "#CDCDB4";
 			if (this.get("value") == "hurt")					// ранен корабль
-				ctx.fillStyle = "#A2C5BF";
+				ctx.fillStyle = "#FF777B";
 			if (this.get("value") == "kill")					// утонул кораблик
-				ctx.fillStyle = "red";	
+				ctx.fillStyle = "#FF4C4B";	
 			if (this.get("value") == "busy")					// тут твой корабль
-				ctx.fillStyle = "grey";				
-			ctx.fill();
+				ctx.fillStyle = "#55ABA8";				
 			ctx.lineWidth = 2;
 			if (this.get("status") == "empty")
 				ctx.strokeStyle = "black";
-			if (this.get("status") == "ok")
-				ctx.strokeStyle = "green";
-			if (this.get("status") == "bad")			
-				ctx.strokeStyle = "red";
+			if (this.get("status") == "ok") {
+				ctx.fillStyle = "#94CAC8";
+				ctx.lineWidth = 4;
+				ctx.strokeStyle = "#55ABA8";
+			}
+			if (this.get("status") == "bad") {	
+				ctx.fillStyle = "#FF777B";
+				ctx.lineWidth = 4;
+				ctx.strokeStyle = "#FF4C4B";
+			}
+			ctx.fill();
 			ctx.stroke();	
 		}
 		
